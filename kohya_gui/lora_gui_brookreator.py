@@ -29,7 +29,7 @@ from .class_basic_training import BasicTraining
 from .class_advanced_training import AdvancedTraining
 from .class_sdxl_parameters import SDXLParameters
 from .class_folders import Folders
-from .class_command_executor import CommandExecutor
+from .class_command_executor_brookreator import CommandExecutor
 from .class_tensorboard import TensorboardManager
 from .class_sample_images import SampleImages, create_prompt_file
 from .class_lora_tab import LoRATools
@@ -1289,9 +1289,15 @@ def train_model(
         # log.info(run_cmd)
         env = setup_environment()
 
-        # Run the command
+        log.info(f"run_cmd: {run_cmd}")
 
-        executor.execute_command(run_cmd=run_cmd, env=env)
+        # Run the command synchronously
+        stdout, stderr = executor.execute_command(run_cmd=run_cmd, env=env)
+
+        # Ensure the command has finished
+        log.info(f"(LORA GUI) Command execution completed with output: {stdout}")
+        if stderr:
+            log.error(f"(LORA GUI) Command execution completed with error: {stderr}")
 
         train_state_value = time.time()
 
