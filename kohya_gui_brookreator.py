@@ -39,22 +39,13 @@ def run_training(config_path, headless, do_not_use_shell):
         train_model(headless, False, *initial_values)
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "--config",
-        type=str,
-        default="./config_brookreator.toml",
-        help="Path to the toml config file for interface defaults",
-    )
-    parser.add_argument("--debug", action="store_true", help="Debug on")
-    parser.add_argument("--headless", action="store_true", help="Is the server headless")
-    parser.add_argument(
-        "--do_not_use_shell", action="store_true", help="Enforce not to use shell=True when running external commands"
-    )
-    
-    args = parser.parse_args()
+    # Set up hard-coded values
+    config_path = "./config_brookreator.toml"
+    debug = True
+    headless = True
+    do_not_use_shell = False
 
     # Set up logging
-    log = setup_logging(debug=args.debug)
+    log = setup_logging(debug=debug)
 
-    run_training(args.config, args.headless, args.do_not_use_shell)
+    run_training(config_path, headless, do_not_use_shell)
