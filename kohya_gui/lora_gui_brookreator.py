@@ -458,14 +458,10 @@ def open_configuration(
     # Store the original file path for potential reuse
     original_file_path = file_path
 
-    print("ask_for_file")
-    print(ask_for_file)
     # Request a file path from the user if required
     if ask_for_file:
         file_path = get_file_path(file_path)
 
-    print("file_path")
-    print(file_path)
     # Proceed if the file path is valid (not empty or None)
     if not file_path == "" and not file_path == None:
         # Check if the file exists before opening it
@@ -1315,9 +1311,6 @@ def lora_tab(
     config: KohyaSSGUIConfig = {},
     use_shell_flag: bool = False,
 ):
-    
-    print("##################### lora_tab appear #####################")
-
     dummy_db_true = gr.Checkbox(value=True, visible=False)
     dummy_db_false = gr.Checkbox(value=False, visible=False)
     dummy_headless = gr.Checkbox(value=headless, visible=False)
@@ -2339,31 +2332,15 @@ def lora_tab(
             show_progress=False,
         )
 
-        print("configuration")
-        print(configuration)
-        print(configuration.config_file_name)
-
-        pathname = "./test/config/SDXL-Standard-Meng.json"
-        config_dropdown = gr.Dropdown(choices=[pathname], value=pathname, allow_custom_value=True)
-        print(config_dropdown)
-
         configuration.button_load_config.click(
             open_configuration,
-            inputs=[dummy_db_false, dummy_db_false, config_dropdown]
+            inputs=[dummy_db_false, dummy_db_false, configuration.config_file_name]
             + settings_list
             + [training_preset],
             outputs=[configuration.config_file_name]
             + settings_list
             + [training_preset, convolution_row],
             show_progress=False,
-        )
-
-        open_configuration(
-            False,
-            False,
-            pathname,
-            *settings_list,
-            training_preset,
         )
 
         training_preset.input(
@@ -2424,6 +2401,7 @@ def lora_tab(
             gr.Markdown(guides_top_level)
 
     return (
+        settings_list,
         source_model.train_data_dir,
         folders.reg_data_dir,
         folders.output_dir,

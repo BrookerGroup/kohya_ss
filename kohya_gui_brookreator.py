@@ -2,12 +2,22 @@ import gradio as gr
 import os
 import argparse
 from kohya_gui.class_gui_config import KohyaSSGUIConfig
-from kohya_gui.lora_gui_brookreator import lora_tab
+from kohya_gui.lora_gui_brookreator import lora_tab,train_model
 from kohya_gui.class_lora_tab import LoRATools
 
 from kohya_gui.custom_logging import setup_logging
 from kohya_gui.localization_ext import add_javascript
 
+def get_values(settings):
+    values = []
+    for setting in settings:
+        # Check if the setting is a string
+        if isinstance(setting, str):
+            values.append(setting)
+        else:
+            # Assume all other settings have a 'value' attribute
+            values.append("" if setting.value is None else setting.value)
+    return values
 
 def UI(**kwargs):
     add_javascript(kwargs.get("language"))
@@ -52,7 +62,11 @@ def UI(**kwargs):
 
     with interface:
         with gr.Tab("LoRA"):
-            lora_tab(headless=headless, config=config, use_shell_flag=use_shell_flag)
+            result_tuple = lora_tab(headless=headless, config=config, use_shell_flag=use_shell_flag)
+            settings_list = result_tuple[0]
+            # Initial trigger to set the output when the interface is launched
+            initial_values = get_values(settings_list)
+            train_model(headless, False, *initial_values)
 
         htmlStr = f"""
         <html>
